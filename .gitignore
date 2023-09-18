@@ -1,0 +1,4 @@
+.vcpkg
+build
+vcpkg_installed
+.github
