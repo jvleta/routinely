@@ -5,6 +5,19 @@
 #include <string>
 #include <vector>
 
+constexpr int kNumChoicesPerDay = 4;
+constexpr int kNumTotalChoices = 7;
+
+std::map<int, std::string> options{
+    {1, "scsles"},
+    {2, "chords"},
+    {3, "arpeggios"},
+    {4, "finger picking"},
+    {5, "alternate picking"},
+    {6, "ear training"},
+    {7, "song practice"},
+};
+
 std::random_device rd;
 std::mt19937 g(rd());
 void print_choices(std::vector<int> choices, std::string message) {
@@ -48,12 +61,13 @@ get_todays_choices(std::vector<int> not_chosen_two_consecutive_days,
               std::back_inserter(todays_choices));
   }
 
-  if (todays_choices.size() < 4) {
+  if (todays_choices.size() < kNumChoicesPerDay) {
     std::vector<int> not_chosen_yet;
     std::set_difference(all_choices.begin(), all_choices.end(),
                         todays_choices.begin(), todays_choices.end(),
                         std::back_inserter(not_chosen_yet));
-    auto choices = get_choices(not_chosen_yet, 4 - todays_choices.size());
+    auto choices =
+        get_choices(not_chosen_yet, kNumChoicesPerDay - todays_choices.size());
     std::copy(choices.begin(), choices.end(),
               std::back_inserter(todays_choices));
     std::sort(todays_choices.begin(), todays_choices.end());
@@ -63,11 +77,11 @@ get_todays_choices(std::vector<int> not_chosen_two_consecutive_days,
 }
 
 int main() {
-  const auto all_choices = generate_all_choices(8);
+  const auto all_choices = generate_all_choices(kNumTotalChoices);
 
-  std::vector<std::string> weekdays{"Monday",   "Tuesday", "Wednesday",
-                                    "Thursday", "Friday",  "Saturday",
-                                    "Sunday"};
+  std::vector<std::string> weekdays{"Sunday",    "Monday",   "Tuesday",
+                                    "Wednesday", "Thursday", "Friday",
+                                    "Saturday"};
 
   std::vector<int> not_chosen;
   std::vector<int> not_chosen_two_consecutive_days;
@@ -76,13 +90,14 @@ int main() {
         get_todays_choices(not_chosen_two_consecutive_days, all_choices);
 
     std::cout << day << "\n";
-    print_choices(todays_choices, "final list of today's choices");
+    for (auto choice : todays_choices) {
+      std::cout << options[choice] << "\n";
+    }
+    std::cout << "\n";
 
     std::set_difference(all_choices.begin(), all_choices.end(),
                         todays_choices.begin(), todays_choices.end(),
                         std::back_inserter(not_chosen));
-
-    print_choices(not_chosen, "not chosen");
 
     not_chosen_two_consecutive_days.clear();
     for (const auto choice : all_choices) {
