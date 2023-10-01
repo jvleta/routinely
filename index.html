@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html>
+  <button id="build-button">click me</button>
+
+  <script>
+    var Module = {
+      onRuntimeInitialized: function () {
+        const button = document.getElementById("build-button");
+        button.addEventListener("click", () => {
+          Module.build();
+        });
+      },
+    };
+  </script>
+  <script src="builder.js"></script>
+</html>
