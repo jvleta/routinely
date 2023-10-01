@@ -1,7 +1,0 @@
-{
-  "name": "practice",
-  "version-string": "unversioned",
-  "homepage": "https://github.com/jvleta/practice/",
-  "description": ["guitar practice routine generator"],
-  "dependencies": ["functions-framework-cpp"]
-}
