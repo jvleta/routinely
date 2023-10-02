@@ -7,30 +7,16 @@
 #include <string>
 #include <vector>
 
+#include <nlohmann/json.hpp>
+
+using json = nlohmann::json;
+
 namespace {
 constexpr int kNumChoicesPerDay = 4;
 constexpr int kNumTotalChoices = 7;
 
-std::map<int, std::string> options{
-    {1, "scsles"},
-    {2, "chords"},
-    {3, "arpeggios"},
-    {4, "finger picking"},
-    {5, "alternate picking"},
-    {6, "ear training"},
-    {7, "song practice"},
-};
-
 std::random_device rd;
 std::mt19937 g(rd());
-void print_choices(std::vector<int> choices, std::string message) {
-  std::cout << message << " ";
-  std::cout << "[ ";
-  for (const auto &choice : choices) {
-    std::cout << choice << " ";
-  }
-  std::cout << "]\n";
-}
 
 void print_counts(std::map<int, int> data) {
   for (const auto pair : data) {
@@ -48,7 +34,7 @@ std::vector<int> get_choices(std::vector<int> options, int num_choices) {
 
 std::vector<int> generate_all_choices(int num_choices) {
   std::vector<int> choices(num_choices);
-  std::iota(choices.begin(), choices.end(), 1);
+  std::iota(choices.begin(), choices.end(), 0);
   return choices;
 }
 
@@ -81,24 +67,22 @@ get_todays_choices(std::vector<int> not_chosen_two_consecutive_days,
 } // namespace
 
 namespace builder {
-void build() {
+
+std::string build(const int num_days) {
+  json j;
   const auto all_choices = generate_all_choices(kNumTotalChoices);
 
-  std::vector<std::string> weekdays{"Sunday",    "Monday",   "Tuesday",
-                                    "Wednesday", "Thursday", "Friday",
-                                    "Saturday"};
+  std::vector<int> days(num_days);
+  std::iota(days.begin(), days.end(), 0);
 
   std::vector<int> not_chosen;
   std::vector<int> not_chosen_two_consecutive_days;
-  for (const auto &day : weekdays) {
+
+  std::for_each(days.begin(), days.end(), [&](int) {
     const auto todays_choices =
         get_todays_choices(not_chosen_two_consecutive_days, all_choices);
 
-    std::cout << day << "\n";
-    for (auto choice : todays_choices) {
-      std::cout << options[choice] << "\n";
-    }
-    std::cout << "\n";
+    j.push_back(todays_choices);
 
     std::set_difference(all_choices.begin(), all_choices.end(),
                         todays_choices.begin(), todays_choices.end(),
@@ -113,8 +97,11 @@ void build() {
         not_chosen.erase(start, not_chosen.end());
       }
     }
-  }
+  });
+
+  return j.dump(4);
 }
+
 } // namespace builder
 
 #endif

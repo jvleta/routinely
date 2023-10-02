@@ -4,6 +4,4 @@
 
 using namespace emscripten;
 
-EMSCRIPTEN_BINDINGS(routine_builder) {
-    function("build", builder::build);
-}
+EMSCRIPTEN_BINDINGS(routine_builder) { function("build", builder::build); }

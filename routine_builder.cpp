@@ -1,3 +1,3 @@
 #include "routine_builder.hpp"
 
-int main() { builder::build(); }
+int main() { builder::build(10); }

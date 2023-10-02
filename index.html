@@ -7,7 +7,27 @@
       onRuntimeInitialized: function () {
         const button = document.getElementById("build-button");
         button.addEventListener("click", () => {
-          Module.build();
+          const practiceAreas = [
+            "scales",
+            "chords",
+            "arpeggios",
+            "finger picking",
+            "alternate picking",
+            "ear training",
+            "song practice",
+          ];
+
+          const out = Module.build(10);
+          const routines = JSON.parse(out);
+
+          let day = new Date();
+          routines.forEach((routine) => {
+            console.log(day);
+            routine.forEach((index) => {
+              console.log(practiceAreas[index]);
+            });
+            day.setDate(day.getDate() + 1);
+          });
         });
       },
     };
