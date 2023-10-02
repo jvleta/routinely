@@ -1,3 +1,5 @@
 routine-*
 .vscode
 a.out
+builder.js
+builder.wasm
