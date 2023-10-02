@@ -3,11 +3,10 @@
 
 #include <iostream>
 #include <map>
+#include <nlohmann/json.hpp>
 #include <random>
 #include <string>
 #include <vector>
-
-#include <nlohmann/json.hpp>
 
 using json = nlohmann::json;
 
@@ -38,9 +37,9 @@ std::vector<int> generate_all_choices(int num_choices) {
   return choices;
 }
 
-std::vector<int>
-get_todays_choices(std::vector<int> not_chosen_two_consecutive_days,
-                   std::vector<int> all_choices) {
+std::vector<int> get_todays_choices(
+    std::vector<int> not_chosen_two_consecutive_days,
+    std::vector<int> all_choices) {
   std::vector<int> todays_choices;
 
   if (!not_chosen_two_consecutive_days.empty()) {
@@ -64,7 +63,7 @@ get_todays_choices(std::vector<int> not_chosen_two_consecutive_days,
 
   return todays_choices;
 }
-} // namespace
+}  // namespace
 
 namespace builder {
 
@@ -102,6 +101,6 @@ std::string build(const int num_days) {
   return j.dump(4);
 }
 
-} // namespace builder
+}  // namespace builder
 
 #endif

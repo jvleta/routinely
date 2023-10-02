@@ -1,6 +1,6 @@
-#include "routine_builder.hpp"
-
 #include <emscripten/bind.h>
+
+#include "routine_builder.hpp"
 
 using namespace emscripten;
 
