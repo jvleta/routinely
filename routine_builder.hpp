@@ -14,18 +14,11 @@ namespace {
 constexpr int kNumChoicesPerDay = 4;
 constexpr int kNumTotalChoices = 7;
 
-std::random_device rd;
-std::mt19937 g(rd());
-
-void print_counts(std::map<int, int> data) {
-  for (const auto pair : data) {
-    auto [index, count] = pair;
-    std::cout << index << " " << count << "\n";
-  }
-}
+std::random_device seed;
+std::mt19937 rng(seed());
 
 std::vector<int> get_choices(std::vector<int> options, int num_choices) {
-  std::shuffle(options.begin(), options.end(), g);
+  std::shuffle(options.begin(), options.end(), rng);
   std::vector<int> subset = {options.begin(), options.begin() + num_choices};
   std::sort(subset.begin(), subset.end());
   return subset;
@@ -68,7 +61,7 @@ std::vector<int> get_todays_choices(
 namespace builder {
 
 std::string build(const int num_days) {
-  json j;
+  json output;
   const auto all_choices = generate_all_choices(kNumTotalChoices);
 
   std::vector<int> days(num_days);
@@ -81,7 +74,7 @@ std::string build(const int num_days) {
     const auto todays_choices =
         get_todays_choices(not_chosen_two_consecutive_days, all_choices);
 
-    j.push_back(todays_choices);
+    output.push_back(todays_choices);
 
     std::set_difference(all_choices.begin(), all_choices.end(),
                         todays_choices.begin(), todays_choices.end(),
@@ -89,8 +82,8 @@ std::string build(const int num_days) {
 
     not_chosen_two_consecutive_days.clear();
     for (const auto choice : all_choices) {
-      int n = std::count(not_chosen.begin(), not_chosen.end(), choice);
-      if (n == 2) {
+      int num_times_not_chosen = std::count(not_chosen.begin(), not_chosen.end(), choice);
+      if (num_times_not_chosen == 2) {
         not_chosen_two_consecutive_days.push_back(choice);
         auto start = std::remove(not_chosen.begin(), not_chosen.end(), choice);
         not_chosen.erase(start, not_chosen.end());
@@ -98,7 +91,7 @@ std::string build(const int num_days) {
     }
   });
 
-  return j.dump(4);
+  return output.dump(4);
 }
 
 }  // namespace builder

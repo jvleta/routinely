@@ -1,3 +1,7 @@
 #include "routine_builder.hpp"
 
-int main() { builder::build(10); }
+int main() {
+  constexpr int num_days = 1;
+  const auto output = builder::build(num_days);
+  std::cout << output;
+}
