@@ -26,3 +26,5 @@ clang++ -isystem /opt/homebrew/Cellar/nlohmann-json/3.11.2/include/ -std=c++20 \
     routinely.cpp main.cpp
 
 emcc -lembind -o builder.js routinely.cpp wasm_bindings.cpp -I /opt/homebrew/Cellar/nlohmann-json/3.11.2/include
+cp builder.js ../
+cp builder.wasm ../
