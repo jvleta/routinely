@@ -35,8 +35,6 @@
             routine.forEach((index) => {
               const innerListItem = document.createElement("li");
               innerListItem.innerText = practiceAreas[index];
-
-              console.log(practiceAreas[index]);
               innerList.appendChild(innerListItem);
             });
             outerListItem.appendChild(innerList);
@@ -50,4 +48,5 @@
     };
   </script>
   <script src="builder.js"></script>
+  <script type="module" src="main.js"></script>
 </html>
