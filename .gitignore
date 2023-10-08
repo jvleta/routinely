@@ -1,0 +1,3 @@
+.vscode
+wasm/a.out
+client/static/wasm/*
