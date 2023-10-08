@@ -1,15 +1,16 @@
+console.log("main");
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
 import {
   getAuth,
   GoogleAuthProvider,
   signInWithPopup,
+  onAuthStateChanged,
 } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-auth.js";
 
 import {
   getFirestore,
   doc,
   getDoc,
-  collection,
   setDoc,
 } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-firestore.js";
 
@@ -25,17 +26,16 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
-const provider = new GoogleAuthProvider();
-console.log(auth);
-signInWithPopup(auth, provider)
-  .then((result) => {
-    const credential = GoogleAuthProvider.credentialFromResult(result);
-    const token = credential.accessToken;
-    const user = result.user;
-    console.log({ credential, token, user });
+
+onAuthStateChanged(auth, (user) => {
+  if (user) {
+    // User is signed in, see docs for a list of available properties
+    // https://firebase.google.com/docs/reference/js/auth.user
+    const uid = user.uid;
+
     (async () => {
       const db = getFirestore(app);
-      const docRef = doc(db, "routines", user.uid);
+      const docRef = doc(db, "routines", uid);
       const docSnap = await getDoc(docRef);
 
       if (await docSnap.exists()) {
@@ -44,12 +44,44 @@ signInWithPopup(auth, provider)
         console.log("No such document!");
         await setDoc(docRef, { message: "hi val!!!" });
       }
+
+      const topics = [
+        "scales",
+        "chords",
+        "arpeggios",
+        "finger picking",
+        "alternate picking",
+        "ear training",
+        "song practice",
+      ];
+      const container = document.getElementById("container");
+      container.innerHTML = "";
+      const outerList = document.createElement("ul");
+      const out = Module.build(1);
+      const routines = JSON.parse(out);
+      let day = new Date();
+      routines.forEach((routine) => {
+        const outerListItem = document.createElement("li");
+        outerListItem.innerText = day;
+        const innerList = document.createElement("ul");
+        routine.forEach((index) => {
+          const innerListItem = document.createElement("li");
+          innerListItem.innerText = topics[index];
+          innerList.appendChild(innerListItem);
+        });
+
+        outerListItem.appendChild(innerList);
+        outerList.appendChild(outerListItem);
+        container.appendChild(outerList);
+        day.setDate(day.getDate() + 1);
+      });
     })();
-  })
-  .catch((error) => {
-    const errorCode = error.code;
-    const errorMessage = error.message;
-    const email = error.customData.email;
-    const credential = GoogleAuthProvider.credentialFromError(error);
-    console.log({ errorCode, errorMessage, email, credential });
-  });
+  } else {
+    const provider = new GoogleAuthProvider();
+    signInWithPopup(auth, provider).then((result) => {
+      const credential = GoogleAuthProvider.credentialFromResult(result);
+      const user = result.user;
+      console.log({credential, user});
+    });
+  }
+});

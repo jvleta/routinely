@@ -1,52 +1,9 @@
 <!DOCTYPE html>
-<html>
-  <button id="build-button">click me</button>
-
-  <div id="practices"></div>
-  <script>
-    var Module = {
-      onRuntimeInitialized: function () {
-        const button = document.getElementById("build-button");
-        button.addEventListener("click", () => {
-          const practiceAreas = [
-            "scales",
-            "chords",
-            "arpeggios",
-            "finger picking",
-            "alternate picking",
-            "ear training",
-            "song practice",
-          ];
-
-          const practicesDiv = document.getElementById("practices");
-          practicesDiv.innerHTML = "";
-          const outerList = document.createElement("ul");
-          
-          const out = Module.build(1);
-          const routines = JSON.parse(out);
-
-          let day = new Date();
-          routines.forEach((routine) => {
-            const outerListItem = document.createElement("li");
-            outerListItem.innerText = day;
-            
-            const innerList = document.createElement("ul");
-
-            routine.forEach((index) => {
-              const innerListItem = document.createElement("li");
-              innerListItem.innerText = practiceAreas[index];
-              innerList.appendChild(innerListItem);
-            });
-            outerListItem.appendChild(innerList);
-            outerList.appendChild(outerListItem);
-            
-            practicesDiv.appendChild(outerList);
-            day.setDate(day.getDate() + 1);
-          });
-        });
-      },
-    };
-  </script>
+<head>
   <script src="builder.js"></script>
   <script type="module" src="main.js"></script>
+</head>
+<body>
+  <div id="container"></div>
+</body>
 </html>
