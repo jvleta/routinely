@@ -1,4 +1,3 @@
-console.log("main");
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.4.0/firebase-app.js";
 import {
   getAuth,
@@ -24,6 +23,40 @@ const firebaseConfig = {
   measurementId: "G-FQPEHSM9Y1",
 };
 
+const buildRoutine = () => {
+  const out = Module.build(1);
+  return JSON.parse(out);
+};
+
+const getTopicDescription = (index) => {
+  const topics = [
+    "scales",
+    "chords",
+    "arpeggios",
+    "finger picking",
+    "alternate picking",
+    "ear training",
+    "song practice",
+  ];
+  return topics[index];
+};
+
+const getCleanContainerElement = () => {
+  const container = document.getElementById("container");
+  container.innerHTML = "";
+  return container;
+};
+
+// const getDates = numDays => {
+//   let day = new Date();
+//   const dates = [];
+//   for (let index = 0; i < numDays; index++) {
+//     dates.push(day);
+//     day.setDate(day.getDate() + 1);
+//   }
+//   return dates;
+// };
+
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 
@@ -45,43 +78,49 @@ onAuthStateChanged(auth, (user) => {
         await setDoc(docRef, { message: "hi val!!!" });
       }
 
-      const topics = [
-        "scales",
-        "chords",
-        "arpeggios",
-        "finger picking",
-        "alternate picking",
-        "ear training",
-        "song practice",
-      ];
-      const container = document.getElementById("container");
-      container.innerHTML = "";
+      const container = getCleanContainerElement();
+
       const outerList = document.createElement("ul");
-      const out = Module.build(1);
-      const routines = JSON.parse(out);
+
+      const routines = buildRoutine();
+
       let day = new Date();
-      routines.forEach((routine) => {
+
+      routines.forEach((routine,i ) => {
+        const dates = get
         const outerListItem = document.createElement("li");
+
         outerListItem.innerText = day;
+
         const innerList = document.createElement("ul");
+
         routine.forEach((index) => {
+          
           const innerListItem = document.createElement("li");
-          innerListItem.innerText = topics[index];
+
+          innerListItem.innerText = getTopicDescription(index);
+
           innerList.appendChild(innerListItem);
+
         });
 
         outerListItem.appendChild(innerList);
         outerList.appendChild(outerListItem);
         container.appendChild(outerList);
+
         day.setDate(day.getDate() + 1);
+
       });
+
     })();
+
   } else {
     const provider = new GoogleAuthProvider();
     signInWithPopup(auth, provider).then((result) => {
       const credential = GoogleAuthProvider.credentialFromResult(result);
       const user = result.user;
-      console.log({credential, user});
+      console.log({ credential, user });
     });
   }
+  
 });
