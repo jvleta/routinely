@@ -1,4 +1,5 @@
 .vscode
 .firebase
 wasm/a.out
+wasm/build
 client/static/wasm/*

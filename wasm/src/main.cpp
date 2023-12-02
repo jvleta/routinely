@@ -3,8 +3,6 @@
 
 #include "routinely.hpp"
 
-constexpr int default_num_days = 30;
-
 int main(int argc, char* argv[]) {
   CLI::App app{"Routinely"};
 
