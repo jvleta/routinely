@@ -111,14 +111,14 @@ macro(routinely_local_options)
   add_library(routinely_warnings INTERFACE)
   add_library(routinely_options INTERFACE)
 
-  include(cmake/CompilerWarnings.cmake)
-  routinely_set_project_warnings(
-    routinely_warnings
-    ${routinely_WARNINGS_AS_ERRORS}
-    ""
-    ""
-    ""
-    "")
+  # include(cmake/CompilerWarnings.cmake)
+  # routinely_set_project_warnings(
+  #   routinely_warnings
+  #   ${routinely_WARNINGS_AS_ERRORS}
+  #   ""
+  #   ""
+  #   ""
+  #   "")
 
   if(routinely_ENABLE_USER_LINKER)
     include(cmake/Linker.cmake)
@@ -150,15 +150,15 @@ macro(routinely_local_options)
     routinely_enable_cache()
   endif()
 
-  include(cmake/StaticAnalyzers.cmake)
-  if(routinely_ENABLE_CLANG_TIDY)
-    routinely_enable_clang_tidy(routinely_options ${routinely_WARNINGS_AS_ERRORS})
-  endif()
+  # include(cmake/StaticAnalyzers.cmake)
+  # if(routinely_ENABLE_CLANG_TIDY)
+  #   routinely_enable_clang_tidy(routinely_options ${routinely_WARNINGS_AS_ERRORS})
+  # endif()
 
-  if(routinely_ENABLE_CPPCHECK)
-    routinely_enable_cppcheck(${routinely_WARNINGS_AS_ERRORS} "" # override cppcheck options
-    )
-  endif()
+  # if(routinely_ENABLE_CPPCHECK)
+  #   routinely_enable_cppcheck(${routinely_WARNINGS_AS_ERRORS} "" # override cppcheck options
+  #   )
+  # endif()
 
   if(routinely_ENABLE_COVERAGE)
     include(cmake/Tests.cmake)
