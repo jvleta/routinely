@@ -16,8 +16,6 @@ std::vector<std::string> read_lines(const std::filesystem::path& path) {
       lines.push_back(line);
     }
     file.close();
-  } else {
-    std::cout << "yoooo\n";
   }
   return lines;
 }
@@ -35,12 +33,5 @@ int main(int argc, char* argv[]) {
 
   std::filesystem::path path = filename;
 
-  auto output = builder::build(num_days);
-
-  auto column_headers = read_lines(path);
-
-  for (auto item : output) {
-    std::ranges::for_each(
-        item, [&](int j) { std::cout << column_headers[j] << "\n"; });
-  }
+  builder::build(num_days);
 }
