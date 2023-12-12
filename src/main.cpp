@@ -1,100 +1,46 @@
-// #include <CLI/CLI.hpp>
-// #include <iostream>
+#include <CLI/CLI.hpp>
+#include <filesystem>
+#include <fstream>
+#include <iostream>
+#include <string>
+#include <vector>
 
-// #include "routinely.hpp"
+#include "routinely.hpp"
 
-// int main(int argc, char* argv[]) {
-//   CLI::App app{"Routinely"};
-
-//   int num_days = 1;
-
-//   app.add_option("-n,--number", num_days,
-//                  "number of days to include in practice plan");
-
-//   CLI11_PARSE(app, argc, argv)
-
-//   const auto output = builder::build(num_days);
-//   std::cout << output;
-// }
-// Copyright 2022 Arthur Sonzogni. All rights reserved.
-// Use of this source code is governed by the MIT license that can be found in
-// the LICENSE file.
-#include <ftxui/component/component_options.hpp>  // for ButtonOption
-#include <ftxui/component/mouse.hpp>              // for ftxui
-#include <functional>                             // for function
-#include <memory>                                 // for allocator, shared_ptr
- 
-#include "ftxui/component/component.hpp"  // for Button, operator|=, Renderer, Vertical, Modal
-#include "ftxui/component/screen_interactive.hpp"  // for ScreenInteractive, Component
-#include "ftxui/dom/elements.hpp"  // for operator|, separator, text, size, Element, vbox, border, GREATER_THAN, WIDTH, center, HEIGHT
- 
-using namespace ftxui;
- 
-auto button_style = ButtonOption::Animated();
- 
-// Definition of the main component. The details are not important.
-Component MainComponent(std::function<void()> show_modal,
-                        std::function<void()> exit) {
-  auto component = Container::Vertical({
-      Button("Show modal", show_modal, button_style),
-      Button("Quit", exit, button_style),
-  });
-  // Polish how the two buttons are rendered:
-  component |= Renderer([&](Element inner) {
-    return vbox({
-               text("Main component"),
-               separator(),
-               inner,
-           })                                //
-           | size(WIDTH, GREATER_THAN, 15)   //
-           | size(HEIGHT, GREATER_THAN, 15)  //
-           | border                          //
-           | center;                         //
-  });
-  return component;
+std::vector<std::string> read_lines(const std::filesystem::path& path) {
+  std::vector<std::string> lines;
+  std::string line;
+  std::ifstream file(path);
+  if (file.is_open()) {
+    while (getline(file, line)) {
+      lines.push_back(line);
+    }
+    file.close();
+  } else {
+    std::cout << "yoooo\n";
+  }
+  return lines;
 }
- 
-// Definition of the modal component. The details are not important.
-Component ModalComponent(std::function<void()> do_nothing,
-                         std::function<void()> hide_modal) {
-  auto component = Container::Vertical({
-      Button("Do nothing", do_nothing, button_style),
-      Button("Quit modal", hide_modal, button_style),
-  });
-  // Polish how the two buttons are rendered:
-  component |= Renderer([&](Element inner) {
-    return vbox({
-               text("Modal component "),
-               separator(),
-               inner,
-           })                               //
-           | size(WIDTH, GREATER_THAN, 30)  //
-           | border;                        //
-  });
-  return component;
-}
- 
-int main(int argc, const char* argv[]) {
-  auto screen = ScreenInteractive::TerminalOutput();
- 
-  // State of the application:
-  bool modal_shown = false;
- 
-  // Some actions modifying the state:
-  auto show_modal = [&] { modal_shown = true; };
-  auto hide_modal = [&] { modal_shown = false; };
-  auto exit = screen.ExitLoopClosure();
-  auto do_nothing = [&] {};
- 
-  // Instanciate the main and modal components:
-  auto main_component = MainComponent(show_modal, exit);
-  auto modal_component = ModalComponent(do_nothing, hide_modal);
- 
-  // Use the `Modal` function to use together the main component and its modal
-  // window. The |modal_shown| boolean controls whether the modal is shown or
-  // not.
-  main_component |= Modal(modal_component, &modal_shown);
- 
-  screen.Loop(main_component);
-  return 0;
+
+int main(int argc, char* argv[]) {
+  CLI::App app{"Routinely"};
+
+  int num_days = 1;
+  std::string filename = "";
+  app.add_option("-n,--number", num_days,
+                 "number of days to include in practice plan");
+  app.add_option("-f,--filename", filename, "schema file");
+
+  CLI11_PARSE(app, argc, argv)
+
+  std::filesystem::path path = filename;
+
+  auto output = builder::build(num_days);
+
+  auto column_headers = read_lines(path);
+
+  for (auto item : output) {
+    std::ranges::for_each(
+        item, [&](int j) { std::cout << column_headers[j] << "\n"; });
+  }
 }

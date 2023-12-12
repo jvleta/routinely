@@ -15,7 +15,7 @@ using size_type = std::vector<int>::size_type;
 namespace {
 constexpr int kMaxAllowedSkips = 2;
 constexpr int kNumChoicesPerDay = 4;
-constexpr int kNumTotalChoices = 7;
+constexpr int kNumTotalChoices = 8;
 
 std::random_device seed;
 std::mt19937 rng(seed());
@@ -89,9 +89,8 @@ void prepare_for_next_iteration(const std::vector<int>& all_choices,
 
 namespace builder {
 
-std::string build(int num_days) {
-  json output;
-
+std::vector<std::vector<int>> build(int num_days) {
+  std::vector<std::vector<int>> rows;
   const auto all_choices =
       get_ordered_integer_sequence(convert<size_type>(kNumTotalChoices));
 
@@ -101,17 +100,20 @@ std::string build(int num_days) {
   std::vector<int> not_chosen;
   std::vector<int> prioritized_choices;
 
-  std::ranges::for_each(day_indices, [&](int) {
+  std::ranges::for_each(day_indices, [&](int index) {
     const auto todays_choices =
         get_todays_choices(prioritized_choices, all_choices);
 
     prepare_for_next_iteration(all_choices, todays_choices, not_chosen,
                                prioritized_choices);
-
-    output.push_back(todays_choices);
+    std::cout << index << " ";
+    std::ranges::for_each(todays_choices,
+                          [](int i) { std::cout << i << " "; });
+    std::cout << "\n";
+    rows.push_back(todays_choices);
   });
 
-  return output.dump(4);
+  return rows;
 }
 
 }  // namespace builder

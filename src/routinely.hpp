@@ -10,7 +10,7 @@ T convert(auto n) {
 
 namespace builder {
 
-std::string build(int num_days);
+std::vector<std::vector<int>> build(int num_days);
 
 }  // namespace builder
 
