@@ -90,6 +90,15 @@ void prepare_for_next_iteration(const std::vector<int>& all_choices,
 namespace builder {
 
 std::vector<std::vector<int>> build(int num_days) {
+  std::vector<std::string> current_focus_areas{"Speed Training",
+                           "Cream and Sugar exercises",
+                           "Giuliani Arpeggios 6-20",
+                           "Chord Chemistry",
+                           "What a Wonderful World",
+                           "Day Tripper",
+                           "Interval Training",
+                           "Improvising"};
+
   std::vector<std::vector<int>> rows;
   const auto all_choices =
       get_ordered_integer_sequence(convert<size_type>(kNumTotalChoices));
@@ -106,10 +115,10 @@ std::vector<std::vector<int>> build(int num_days) {
 
     prepare_for_next_iteration(all_choices, todays_choices, not_chosen,
                                prioritized_choices);
-    std::cout << index << " ";
+    std::cout << index + 1 << "\n";
     std::ranges::for_each(todays_choices,
-                          [](int i) { std::cout << i << " "; });
-    std::cout << "\n";
+                          [&current_focus_areas](int i) { std::cout << current_focus_areas[i]<< "\n"; });
+    std::cout << "\n\n";
     rows.push_back(todays_choices);
   });
 
