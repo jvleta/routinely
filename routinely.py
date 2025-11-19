@@ -10,6 +10,7 @@ import random
 import sys
 from typing import Dict, List, NotRequired, Sequence, TypedDict
 
+
 class Config(TypedDict):
     options: List[str]
     items_per_session: int
