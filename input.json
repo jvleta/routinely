@@ -1,19 +1,6 @@
 {
-  "options": [
-    "Single Note Soloing",
-    "One Chord Vamps",
-    "Standards Workbook",
-    "Deep in the South",
-    "Fingerpicking Styles for Guitar",
-    "Mauro Giuliani Arpeggios",
-    "Matteo Carcassi Etudes",
-    "The Guitar Finger Gym",
-    "Eruption",
-    "The Real Christmas Book",
-    "First 50 Jazz Standards",
-    "Funk Guitar Mastery"
-  ],
+  "options": ["scales", "chords", "songs", "improv", "ear training"],
   "items_per_session": 4,
   "max_gap": 2,
-  "sessions": 30
+  "sessions": 10
 }
