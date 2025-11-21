@@ -68,11 +68,10 @@ class RoutinelyTests(unittest.TestCase):
 
         markdown = _format_markdown(plan, picks, generated)
 
-        expected = """# Practice Routine\n\nGenerated on January 01 2024\n\n## Sessions\n| Session | Item 1 | Item 2 |\n| --- | --- | --- |\n| 01 | Warmup | Scales |\n| 02 | Chords |  |\n\n## Selection Counts\n\n| Option | Count |\n| --- | --- |\n| Chords | 1 |\n| Scales | 1 |\n| Warmup | 1 |\n"""
+        expected = """# Practice Routine\n\nGenerated on January 01 2024\n\n## Sessions\n| Session | Date | Item 1 | Item 2 | Item 3 | Item 4 | Done |\n| --- | --- | --- | --- | --- | --- | --- |\n| 01 |  | Warmup | Scales |  |  |  |\n| 02 |  | Chords |  |  |  |  |\n\n## Selection Counts\n\n| Option | Count |\n| --- | --- |\n| Chords | 1 |\n| Scales | 1 |\n| Warmup | 1 |\n"""
 
         self.assertEqual(markdown, expected)
 
 
 if __name__ == "__main__":  # pragma: no cover
     unittest.main()
-

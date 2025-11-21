@@ -99,10 +99,10 @@ def _build_plan(
 def _format_markdown(
     plan: Sequence[Sequence[str]], picks: Dict[str, int], generated_on: str
 ) -> str:
-    max_items = max((len(session) for session in plan), default=0)
+    max_items = max(4, *(len(session) for session in plan)) if plan else 4
     item_headers = [f"Item {idx}" for idx in range(1, max_items + 1)]
-    header = "| Session | " + " | ".join(item_headers) + " |" if item_headers else "| Session |"
-    separator = "| --- | " + " | ".join(["---"] * len(item_headers)) + " |" if item_headers else "| --- |"
+    header = "| Session | Date | " + " | ".join(item_headers) + " | Done |"
+    separator = "| --- | --- | " + " | ".join(["---"] * len(item_headers)) + " | --- |"
 
     lines = [
         "# Practice Routine",
@@ -115,7 +115,7 @@ def _format_markdown(
     ]
     for index, session in enumerate(plan, start=1):
         padded = list(session) + ["" for _ in range(max_items - len(session))]
-        lines.append(f"| {index:02d} | " + " | ".join(padded) + " |")
+        lines.append(f"| {index:02d} |  | " + " | ".join(padded) + " |  |")
 
     lines.extend(
         [
