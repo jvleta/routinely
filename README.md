@@ -4,7 +4,8 @@ Routinely is an app that I use to generate monthly guitar practice routines.
 
 ## Usage
 
-`python routinely.py config.json`. 
+- Generate a plan: `python routinely.py generate config.json --markdown plan.md` (also writes `config.plan.json` unless you set `--plan-json PATH`).
+- Manage practice logs: `python routinely.py log config.json add --session 1 --notes "Played at 80bpm"`. Use `list`/`delete` likewise. Logging validates against the plan JSON (session count + config hash) if present.
 
 ## Example config:
 ```json
