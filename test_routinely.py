@@ -8,6 +8,7 @@ import os
 import random
 import tempfile
 import unittest
+from pathlib import Path
 from unittest import mock
 
 from routinely import (
@@ -107,8 +108,8 @@ class RoutinelyTests(unittest.TestCase):
         temp.close()
         self.addCleanup(lambda: os.remove(temp.name))
 
-        _save_practice_log(temp.name, log)
-        loaded = _load_practice_log(temp.name, 3)
+        _save_practice_log(Path(temp.name), log)
+        loaded = _load_practice_log(Path(temp.name), 3)
         entries = loaded.entries_for(1)
 
         self.assertEqual(len(entries), 1)
@@ -128,8 +129,7 @@ class RoutinelyTests(unittest.TestCase):
         temp = tempfile.NamedTemporaryFile("w", delete=False, encoding="utf-8")
         temp.close()
         self.addCleanup(lambda: os.remove(temp.name))
-
-        _write_plan_json(temp.name, plan, picks, "Jan 01 2024", config_path)
+        _write_plan_json(Path(temp.name), plan, picks, "Jan 01 2024", config_path)
 
         with open(temp.name, "r", encoding="utf-8") as handle:
             data = json.load(handle)
@@ -188,7 +188,7 @@ class RoutinelyTests(unittest.TestCase):
         result = _handle_log(args)
 
         self.assertEqual(result, 0)
-        loaded = _load_practice_log(log_temp.name, 2)
+        loaded = _load_practice_log(Path(log_temp.name), 2)
         self.assertTrue(loaded.is_done(1))
         self.assertIsNotNone(loaded.done_at(1))
 
@@ -221,7 +221,7 @@ class RoutinelyTests(unittest.TestCase):
         self.addCleanup(lambda: os.remove(log_path.name))
         log = PracticeLog(2)
         log.mark_done(0, datetime.datetime(2024, 1, 1, 12, 0, 0))
-        _save_practice_log(log_path.name, log)
+        _save_practice_log(Path(log_path.name), log)
 
         output_markdown = tempfile.NamedTemporaryFile(
             "w", delete=False, encoding="utf-8"
