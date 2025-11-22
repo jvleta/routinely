@@ -163,6 +163,34 @@ class RoutinelyTests(unittest.TestCase):
         with self.assertRaises(SystemExit):
             _handle_log(args)
 
+    def test_handle_log_marks_session_done(self) -> None:
+        config = {
+            "options": ["X", "Y"],
+            "items_per_session": 1,
+            "max_gap": 1,
+            "sessions": 2,
+        }
+        config_path = self._write_config(config)
+        log_temp = tempfile.NamedTemporaryFile("w", delete=False, encoding="utf-8")
+        log_temp.close()
+        self.addCleanup(lambda: os.remove(log_temp.name))
+        os.remove(log_temp.name)
+
+        args = mock.Mock(
+            config=config_path,
+            log_file=log_temp.name,
+            plan_json=None,
+            log_command="done",
+            session=2,
+        )
+
+        result = _handle_log(args)
+
+        self.assertEqual(result, 0)
+        loaded = _load_practice_log(log_temp.name, 2)
+        self.assertTrue(loaded.is_done(1))
+        self.assertIsNotNone(loaded.done_at(1))
+
 
 if __name__ == "__main__":  # pragma: no cover
     unittest.main()

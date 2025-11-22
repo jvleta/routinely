@@ -36,6 +36,7 @@ class PracticeLog:
         session_count: int,
         entries: Sequence[PracticeLogEntry] | None = None,
         next_id: int = 1,
+        done_sessions: Sequence[tuple[int, datetime.datetime | None]] | None = None,
     ):
         if session_count <= 0:
             raise ValueError("session_count must be positive")
@@ -45,10 +46,15 @@ class PracticeLog:
             [] for _ in range(session_count)
         ]
         self._entries_by_id: Dict[int, PracticeLogEntry] = {}
+        self._done_sessions: Dict[int, datetime.datetime | None] = {}
         self._next_id = max(1, next_id)
 
         for entry in entries or []:
             self._store_entry(entry)
+
+        for session_index, completed_at in done_sessions or []:
+            self._validate_session_index(session_index)
+            self._done_sessions[session_index] = completed_at
 
         self._next_id = max(
             self._next_id, (max(self._entries_by_id) + 1) if self._entries_by_id else 1
@@ -65,6 +71,23 @@ class PracticeLog:
         self._validate_session_index(entry["session_index"])
         self._entries[entry["session_index"]].append(entry)
         self._entries_by_id[entry["entry_id"]] = entry
+
+    def mark_done(
+        self, session_index: int, completed_at: datetime.datetime | None = None
+    ) -> bool:
+        self._validate_session_index(session_index)
+        if session_index in self._done_sessions:
+            return False
+        self._done_sessions[session_index] = completed_at or datetime.datetime.now()
+        return True
+
+    def done_at(self, session_index: int) -> datetime.datetime | None:
+        self._validate_session_index(session_index)
+        return self._done_sessions.get(session_index)
+
+    def is_done(self, session_index: int) -> bool:
+        self._validate_session_index(session_index)
+        return session_index in self._done_sessions
 
     def add_entry(
         self,
@@ -106,6 +129,19 @@ class PracticeLog:
     def to_json(self) -> Dict[str, object]:
         return {
             "next_id": self._next_id,
+            "done_sessions": [
+                {
+                    "session_index": session_index,
+                    **(
+                        {"completed_at": completed_at.isoformat()}
+                        if completed_at
+                        else {}
+                    ),
+                }
+                for session_index, completed_at in sorted(
+                    self._done_sessions.items(), key=lambda item: item[0]
+                )
+            ],
             "entries": [
                 {
                     "entry_id": entry["entry_id"],
@@ -154,8 +190,28 @@ def _load_practice_log(path: Path, session_count: int) -> PracticeLog:
             raise SystemExit(f"Malformed log entry in {path}: {exc}") from exc
         entries.append(entry)
 
+    done_sessions: List[tuple[int, datetime.datetime | None]] = []
+    for session_value in raw.get("done_sessions", []):
+        try:
+            if isinstance(session_value, dict):
+                session_index = int(session_value["session_index"])
+                completed_raw = session_value.get("completed_at")
+                completed_at = (
+                    datetime.datetime.fromisoformat(completed_raw)
+                    if completed_raw
+                    else None
+                )
+            else:
+                session_index = int(session_value)
+                completed_at = None
+            done_sessions.append((session_index, completed_at))
+        except (KeyError, TypeError, ValueError) as exc:
+            raise SystemExit(
+                f"Malformed done_sessions value in {path}: {exc}"
+            ) from exc
+
     next_id = raw.get("next_id", (max((e["entry_id"] for e in entries), default=0) + 1))
-    return PracticeLog(session_count, entries, int(next_id))
+    return PracticeLog(session_count, entries, int(next_id), done_sessions)
 
 
 def _save_practice_log(path: Path, log: PracticeLog) -> None:
@@ -446,6 +502,16 @@ def _handle_log(args: argparse.Namespace) -> int:
         )
         return 0
 
+    if args.log_command == "done":
+        session_index = _normalize_session_index(args.session, session_count)
+        updated = log.mark_done(session_index)
+        if updated:
+            _save_practice_log(log_path, log)
+            print(f"Marked session {args.session} as done: **X**")
+        else:
+            print(f"Session {args.session} was already marked as done: **X**")
+        return 0
+
     raise SystemExit("Unknown log command")
 
 
@@ -516,6 +582,14 @@ def _parse_args(argv: Sequence[str]) -> argparse.Namespace:
         "--session",
         type=int,
         help="Optional 1-based session index to filter entries",
+    )
+
+    log_done = log_subparsers.add_parser("done", help="Mark a session as completed")
+    log_done.add_argument(
+        "--session",
+        type=int,
+        required=True,
+        help="1-based session index from the plan table",
     )
 
     log_delete = log_subparsers.add_parser("delete", help="Delete a log entry by id")
