@@ -1,0 +1,35 @@
+{
+  "next_id": 4,
+  "done_sessions": [
+    {
+      "session_index": 0
+    },
+    {
+      "session_index": 2
+    },
+    {
+      "session_index": 3,
+      "completed_at": "2025-11-22T00:35:01.403130"
+    }
+  ],
+  "entries": [
+    {
+      "entry_id": 1,
+      "session_index": 0,
+      "notes": "made some noise",
+      "logged_at": "2025-11-21T12:03:40.263899"
+    },
+    {
+      "entry_id": 2,
+      "session_index": 0,
+      "notes": "made some more noise",
+      "logged_at": "2025-11-21T12:03:57.179874"
+    },
+    {
+      "entry_id": 3,
+      "session_index": 1,
+      "notes": "made some more noise",
+      "logged_at": "2025-11-21T12:05:49.352174"
+    }
+  ]
+}

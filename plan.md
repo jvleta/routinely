@@ -1,27 +1,27 @@
 # Practice Routine
 
-Generated on November 18 2025
+Generated on November 21 2025
 
 ## Sessions
-| Session | Item 1 | Item 2 | Item 3 | Item 4 |
-| --- | --- | --- | --- | --- |
-| 01 | songs | scales | chords | improv |
-| 02 | ear training | scales | songs | chords |
-| 03 | improv | ear training | songs | scales |
-| 04 | ear training | improv | scales | chords |
-| 05 | scales | ear training | chords | songs |
-| 06 | chords | improv | songs | ear training |
-| 07 | scales | songs | ear training | chords |
-| 08 | scales | improv | chords | songs |
-| 09 | scales | chords | improv | ear training |
-| 10 | songs | ear training | improv | chords |
+| Session | Date | Item 1 | Item 2 | Item 3 | Item 4 | Done |
+| --- | --- | --- | --- | --- | --- | --- |
+| 01 |  | ear training | improv | songs | scales |  |
+| 02 |  | ear training | chords | songs | scales |  |
+| 03 |  | songs | chords | ear training | improv |  |
+| 04 | 2025-11-22 | ear training | chords | scales | songs | **X** |
+| 05 |  | improv | chords | songs | ear training |  |
+| 06 |  | improv | chords | songs | scales |  |
+| 07 |  | ear training | songs | scales | improv |  |
+| 08 |  | improv | ear training | chords | songs |  |
+| 09 |  | chords | scales | songs | ear training |  |
+| 10 |  | ear training | improv | chords | scales |  |
 
 ## Selection Counts
 
 | Option | Count |
 | --- | --- |
-| chords | 9 |
-| ear training | 8 |
+| chords | 8 |
+| ear training | 9 |
 | improv | 7 |
-| scales | 8 |
-| songs | 8 |
+| scales | 7 |
+| songs | 9 |

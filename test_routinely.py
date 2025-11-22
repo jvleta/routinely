@@ -16,6 +16,7 @@ from routinely import (
     _build_plan,
     _format_markdown,
     _handle_log,
+    _handle_render,
     _load_config,
     _load_practice_log,
     _save_practice_log,
@@ -190,6 +191,57 @@ class RoutinelyTests(unittest.TestCase):
         loaded = _load_practice_log(log_temp.name, 2)
         self.assertTrue(loaded.is_done(1))
         self.assertIsNotNone(loaded.done_at(1))
+
+    def test_handle_render_marks_done_in_markdown(self) -> None:
+        config = {
+            "options": ["X", "Y"],
+            "items_per_session": 1,
+            "max_gap": 1,
+            "sessions": 2,
+        }
+        config_path = self._write_config(config)
+
+        plan_path = tempfile.NamedTemporaryFile("w", delete=False, encoding="utf-8")
+        plan_path.close()
+        self.addCleanup(lambda: os.remove(plan_path.name))
+        plan = [["X"], ["Y"]]
+        picks = {"X": 1, "Y": 1}
+        plan_data = {
+            "generated_on": "Jan 01 2024",
+            "session_count": 2,
+            "plan": plan,
+            "picks": picks,
+            "config_hash": _config_hash(config_path),
+        }
+        with open(plan_path.name, "w", encoding="utf-8") as handle:
+            json.dump(plan_data, handle)
+
+        log_path = tempfile.NamedTemporaryFile("w", delete=False, encoding="utf-8")
+        log_path.close()
+        self.addCleanup(lambda: os.remove(log_path.name))
+        log = PracticeLog(2)
+        log.mark_done(0, datetime.datetime(2024, 1, 1, 12, 0, 0))
+        _save_practice_log(log_path.name, log)
+
+        output_markdown = tempfile.NamedTemporaryFile(
+            "w", delete=False, encoding="utf-8"
+        )
+        output_markdown.close()
+        self.addCleanup(lambda: os.remove(output_markdown.name))
+
+        args = mock.Mock(
+            config=config_path,
+            plan_json=plan_path.name,
+            log_file=log_path.name,
+            markdown=output_markdown.name,
+        )
+
+        result = _handle_render(args)
+
+        self.assertEqual(result, 0)
+        with open(output_markdown.name, "r", encoding="utf-8") as handle:
+            content = handle.read()
+        self.assertIn("| 01 | 2024-01-01 | X |  |  |  | **X** |", content)
 
 
 if __name__ == "__main__":  # pragma: no cover

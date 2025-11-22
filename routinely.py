@@ -5,12 +5,12 @@ from __future__ import annotations
 
 import argparse
 import datetime
+import hashlib
 import json
 import random
 import sys
 from pathlib import Path
-from typing import Dict, List, NotRequired, Sequence, TypedDict
-import hashlib
+from typing import Dict, List, Mapping, NotRequired, Sequence, TypedDict
 
 
 class Config(TypedDict):
@@ -84,6 +84,9 @@ class PracticeLog:
     def done_at(self, session_index: int) -> datetime.datetime | None:
         self._validate_session_index(session_index)
         return self._done_sessions.get(session_index)
+
+    def done_sessions(self) -> Dict[int, datetime.datetime | None]:
+        return dict(self._done_sessions)
 
     def is_done(self, session_index: int) -> bool:
         self._validate_session_index(session_index)
@@ -343,7 +346,10 @@ def _build_plan(
 
 
 def _format_markdown(
-    plan: Sequence[Sequence[str]], picks: Dict[str, int], generated_on: str
+    plan: Sequence[Sequence[str]],
+    picks: Dict[str, int],
+    generated_on: str,
+    done_marks: Mapping[int, datetime.datetime | None] | None = None,
 ) -> str:
     max_items = max(4, *(len(session) for session in plan)) if plan else 4
     item_headers = [f"Item {idx}" for idx in range(1, max_items + 1)]
@@ -361,7 +367,14 @@ def _format_markdown(
     ]
     for index, session in enumerate(plan, start=1):
         padded = list(session) + ["" for _ in range(max_items - len(session))]
-        lines.append(f"| {index:02d} |  | " + " | ".join(padded) + " |  |")
+        completion = done_marks.get(index - 1) if done_marks else None
+        date_cell = completion.date().isoformat() if completion else ""
+        done_cell = "**X**" if completion else ""
+        lines.append(
+            f"| {index:02d} | {date_cell} | "
+            + " | ".join(padded)
+            + f" | {done_cell} |"
+        )
 
     lines.extend(
         [
@@ -405,7 +418,9 @@ def _handle_generate(args: argparse.Namespace) -> int:
     if args.markdown:
         try:
             with open(args.markdown, "w", encoding="utf-8") as markdown_file:
-                markdown_file.write(_format_markdown(plan, picks, generated_on))
+                markdown_file.write(
+                    _format_markdown(plan, picks, generated_on, done_marks=None)
+                )
         except OSError as exc:
             raise SystemExit(f"Failed to write Markdown output: {exc}") from exc
 
@@ -515,9 +530,63 @@ def _handle_log(args: argparse.Namespace) -> int:
     raise SystemExit("Unknown log command")
 
 
+def _handle_render(args: argparse.Namespace) -> int:
+    config = _load_config(args.config)
+    session_count = config["sessions"]
+
+    plan_path = Path(args.plan_json) if args.plan_json else _default_plan_path(
+        args.config
+    )
+    try:
+        with open(plan_path, "r", encoding="utf-8") as plan_file:
+            plan_data = json.load(plan_file)
+    except OSError as exc:  # pragma: no cover - defensive guard
+        raise SystemExit(f"Failed to read plan JSON: {exc}") from exc
+    except json.JSONDecodeError as exc:  # pragma: no cover - defensive guard
+        raise SystemExit(f"Invalid plan JSON: {exc}") from exc
+
+    plan_sessions = int(plan_data.get("session_count", 0))
+    if plan_sessions != session_count:
+        raise SystemExit(
+            f"Plan session count {plan_sessions} does not match config sessions "
+            f"{session_count}. Regenerate the plan before rendering."
+        )
+    config_hash = plan_data.get("config_hash")
+    if config_hash and config_hash != _config_hash(args.config):
+        raise SystemExit(
+            "Configuration has changed since the plan was generated. "
+            "Regenerate the plan before rendering."
+        )
+
+    plan = plan_data.get("plan")
+    picks = plan_data.get("picks")
+    generated_on = plan_data.get("generated_on")
+    if not isinstance(plan, list) or not isinstance(picks, dict) or not isinstance(
+        generated_on, str
+    ):
+        raise SystemExit("Plan JSON missing required keys for rendering.")
+
+    log_path = Path(args.log_file) if args.log_file else _default_log_path(
+        args.config
+    )
+    log = _load_practice_log(log_path, session_count)
+    done_marks = log.done_sessions()
+
+    try:
+        with open(args.markdown, "w", encoding="utf-8") as markdown_file:
+            markdown_file.write(
+                _format_markdown(plan, picks, generated_on, done_marks=done_marks)
+            )
+    except OSError as exc:  # pragma: no cover - defensive guard
+        raise SystemExit(f"Failed to write Markdown output: {exc}") from exc
+
+    print(f"Wrote Markdown with completion marks to {args.markdown}")
+    return 0
+
+
 def _parse_args(argv: Sequence[str]) -> argparse.Namespace:
     argv = list(argv)
-    if argv and argv[0] not in {"generate", "log"}:
+    if argv and argv[0] not in {"generate", "log", "render"}:
         argv = ["generate"] + argv
 
     parser = argparse.ArgumentParser(
@@ -600,6 +669,29 @@ def _parse_args(argv: Sequence[str]) -> argparse.Namespace:
         help="Identifier of the entry to delete (see the list command)",
     )
 
+    render_parser = subparsers.add_parser(
+        "render", help="Render Markdown from an existing plan and log status"
+    )
+    render_parser.add_argument(
+        "config", help="Path to the configuration JSON file for the routine"
+    )
+    render_parser.add_argument(
+        "--plan-json",
+        metavar="PATH",
+        help="Path to plan JSON (defaults to alongside config)",
+    )
+    render_parser.add_argument(
+        "--log-file",
+        metavar="PATH",
+        help="Path to the practice log JSON file (defaults to alongside config)",
+    )
+    render_parser.add_argument(
+        "--markdown",
+        required=True,
+        metavar="PATH",
+        help="Markdown output path reflecting completion status",
+    )
+
     return parser.parse_args(argv)
 
 
@@ -609,6 +701,8 @@ def main(argv: Sequence[str]) -> int:
         return _handle_generate(args)
     if args.command == "log":
         return _handle_log(args)
+    if args.command == "render":
+        return _handle_render(args)
     raise SystemExit("Unknown command")
 
 

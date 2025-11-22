@@ -1,0 +1,74 @@
+{
+  "generated_on": "November 21 2025",
+  "session_count": 10,
+  "plan": [
+    [
+      "ear training",
+      "improv",
+      "songs",
+      "scales"
+    ],
+    [
+      "ear training",
+      "chords",
+      "songs",
+      "scales"
+    ],
+    [
+      "songs",
+      "chords",
+      "ear training",
+      "improv"
+    ],
+    [
+      "ear training",
+      "chords",
+      "scales",
+      "songs"
+    ],
+    [
+      "improv",
+      "chords",
+      "songs",
+      "ear training"
+    ],
+    [
+      "improv",
+      "chords",
+      "songs",
+      "scales"
+    ],
+    [
+      "ear training",
+      "songs",
+      "scales",
+      "improv"
+    ],
+    [
+      "improv",
+      "ear training",
+      "chords",
+      "songs"
+    ],
+    [
+      "chords",
+      "scales",
+      "songs",
+      "ear training"
+    ],
+    [
+      "ear training",
+      "improv",
+      "chords",
+      "scales"
+    ]
+  ],
+  "picks": {
+    "scales": 7,
+    "chords": 8,
+    "songs": 9,
+    "improv": 7,
+    "ear training": 9
+  },
+  "config_hash": "ae41d994cc506f3ca8b799ada280ada7d3daba8d34aa46657214a00b0f8b926b"
+}
