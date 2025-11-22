@@ -619,7 +619,7 @@ def _parse_args(argv: Sequence[str]) -> argparse.Namespace:
     )
 
     log_parser = subparsers.add_parser(
-        "log", help="Add, list, or delete practice log entries"
+        "log", help="Add/list/delete practice log entries or mark sessions done"
     )
     log_parser.add_argument(
         "config", help="Path to the configuration JSON file for the routine"
