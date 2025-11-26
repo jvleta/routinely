@@ -9,10 +9,10 @@ Generated on November 18 2025
 | 02 | *Nov 19* | Eruption | First 50 Jazz Standards | Matteo Carcassi Etudes | One Chord Vamps | **X** |
 | 03 | *Nov 20* | Fingerpicking Styles for Guitar | Funk Guitar Mastery | Mauro Giuliani Arpeggios | Single Note Soloing | **X** |
 | 04 | *Nov 21* | Deep in the South | Standards Workbook | The Guitar Finger Gym | The Real Christmas Book | **X** |
-| 05 | *Nov 22* | Eruption | First 50 Jazz Standards | Matteo Carcassi Etudes | One Chord Vamps |  |
+| 05 | *Nov 22* | Eruption | First 50 Jazz Standards | Matteo Carcassi Etudes | One Chord Vamps | **X** |
 | 06 | *Nov 23* | Fingerpicking Styles for Guitar | Funk Guitar Mastery | Mauro Giuliani Arpeggios | Single Note Soloing | **X** |
-| 07 | *Nov 24* | Deep in the South | Standards Workbook | The Guitar Finger Gym | The Real Christmas Book |  |
-| 08 |  | Eruption | First 50 Jazz Standards | Matteo Carcassi Etudes | One Chord Vamps |  |
+| 07 | *Nov 24* | Deep in the South | Standards Workbook | The Guitar Finger Gym | The Real Christmas Book | **X** |
+| 08 | *Nov 25* | Eruption | First 50 Jazz Standards | Matteo Carcassi Etudes | One Chord Vamps | **X** |
 | 09 |  | Fingerpicking Styles for Guitar | Funk Guitar Mastery | Mauro Giuliani Arpeggios | Single Note Soloing |  |
 | 10 |  | Deep in the South | Standards Workbook | The Guitar Finger Gym | The Real Christmas Book |  |
 | 11 |  | Eruption | First 50 Jazz Standards | Matteo Carcassi Etudes | One Chord Vamps |  |
