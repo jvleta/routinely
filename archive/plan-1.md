@@ -14,7 +14,7 @@ Generated on November 18 2025
 | 07 | *Nov 24* | Deep in the South | Standards Workbook | The Guitar Finger Gym | The Real Christmas Book | **X** |
 | 08 | *Nov 25* | Eruption | First 50 Jazz Standards | Matteo Carcassi Etudes | One Chord Vamps | **X** |
 | 09 | *Nov 28* | Fingerpicking Styles for Guitar | Funk Guitar Mastery | Mauro Giuliani Arpeggios | Single Note Soloing | **X**  |
-| 10 |  | Deep in the South | Standards Workbook | The Guitar Finger Gym | The Real Christmas Book |  |
+| 10 | *Nov 29* | Deep in the South | Standards Workbook | The Guitar Finger Gym | The Real Christmas Book | **X** |
 | 11 |  | Eruption | First 50 Jazz Standards | Matteo Carcassi Etudes | One Chord Vamps |  |
 | 12 |  | Fingerpicking Styles for Guitar | Funk Guitar Mastery | Mauro Giuliani Arpeggios | Single Note Soloing |  |
 | 13 |  | Deep in the South | Standards Workbook | The Guitar Finger Gym | The Real Christmas Book |  |
