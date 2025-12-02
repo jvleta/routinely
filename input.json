@@ -1,6 +1,23 @@
 {
-  "options": ["scales", "chords", "songs", "improv", "ear training"],
-  "items_per_session": 4,
+  "options": [
+    "Deep in the South",
+    "Standards Workbook",
+    "The Guitar Finger Gym",
+    "The Real Christmas Book",
+    "Rock Guitar Tapping Techniques",
+    "First 50 Jazz Standards",
+    "Matteo Carcassi",
+    "One Chord Vamps",
+    "Fingerpicking Styles for Guitar",
+    "Funk Guitar Mastery",
+    "Mauro Giulianni Arpeggios",
+    "Single Note Soloing",
+    "12 Etudes for Solo Guitar",
+    "25 Blues Etudes",
+    "Fifteen Two-Part Inventions for Guitar",
+    "Joe Satriani - Guitar Secrets"
+  ],
+  "items_per_session": 6,
   "max_gap": 2,
-  "sessions": 10
+  "sessions": 14
 }

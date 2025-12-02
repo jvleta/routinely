@@ -75,6 +75,13 @@ class RoutinelyTests(unittest.TestCase):
         with self.assertRaises(SystemExit):
             _build_plan(["A", "B"], 1, 0, 2, rng)
 
+    def test_build_plan_sorts_each_session(self) -> None:
+        rng = random.Random(1)
+
+        plan, _ = _build_plan(["Beta", "alpha", "Zebra"], 3, 2, 1, rng)
+
+        self.assertEqual(plan[0], ["alpha", "Beta", "Zebra"])
+
     def test_format_markdown_outputs_tables(self) -> None:
         plan = [["Warmup", "Scales"], ["Chords"]]
         picks = {"Warmup": 1, "Scales": 1, "Chords": 1}

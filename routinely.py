@@ -331,8 +331,8 @@ def _build_plan(
             remaining.sort(key=lambda option: days_since[option], reverse=True)
             chosen.extend(remaining[:remaining_slots])
 
-        rng.shuffle(chosen)
-        plan.append(chosen[:])
+        ordered = sorted(chosen, key=lambda option: option[:1].lower())
+        plan.append(ordered)
 
         selected = set(chosen)
         for opt in options:
